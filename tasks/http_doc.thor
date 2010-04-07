@@ -11,18 +11,23 @@ class HttpDoc < Thor
     :desc => "Base URL for API URLs"
   def build(*paths)
     base_url = options[:base_url] || "http://localhost/"
-    paths.each do |path|
+    paths = paths.map { |path|
       path = path.gsub(/\/$/, '')
-      Dir.glob("#{path}/**/*_controller.rb").each do |fn|
-        puts fn
-        parser = ::HttpDoc::RubyCommentParser.new(fn)
-        parser.parse
-        if parser.controller
-          r = ::HttpDoc::Rendering::SingleFileRenderer.new(:base_url => base_url)
-          output_filename = File.basename(fn).gsub(/\.rb/, '')
-          output_filename << ".html"
-          File.open(output_filename, "w") { |f| f << r.render_controller(parser.controller) }
-        end
+      if File.file?(path)
+        path
+      else
+        Dir.glob("#{path}/**/*_controller.rb")
+      end
+    }.flatten
+    paths.each do |fn|
+      puts fn
+      parser = ::HttpDoc::RubyCommentParser.new(fn)
+      parser.parse
+      if parser.controller
+        r = ::HttpDoc::Rendering::SingleFileRenderer.new(:base_url => base_url)
+        output_filename = File.basename(fn).gsub(/\.rb/, '')
+        output_filename << ".html"
+        File.open(output_filename, "w") { |f| f << r.render_controller(parser.controller) }
       end
     end
   end
