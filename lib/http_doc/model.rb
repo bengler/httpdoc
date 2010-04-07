@@ -41,6 +41,7 @@ module HttpDoc
     attr_accessor :description
     attr_accessor :actions
     attr_accessor :constants
+    attr_accessor :url
   end
   
 end

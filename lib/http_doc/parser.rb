@@ -11,6 +11,10 @@ module HttpDoc
         controller.title = $1.strip
         break
       end
+      doc.scan(/@url\s+(.*?)(?=^@|\z)/m) do
+        controller.url = $1.strip
+        break
+      end
       controller
     end
     
@@ -103,6 +107,7 @@ module HttpDoc
           end
         end
       end
+      @controller.url ||= $1 if @file_name =~ /(\w+)_controller\./
       flush
     end
     

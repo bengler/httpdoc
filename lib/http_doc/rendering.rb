@@ -38,7 +38,7 @@ module HttpDoc
               raise UndefinedConstantError.new(name) unless value
               value = eval(value)
             when "base_url"
-              value = @renderer.base_url.gsub(/\/$/, '')
+              value = base_url.gsub(/\/$/, '')
             else
               raise UndefinedVariableError, name
           end
@@ -52,7 +52,14 @@ module HttpDoc
       end
       
       def expand_url_with_subtitutions(url)
+        url = [base_url, url].join("/") unless url =~ /^\//
         return URI.join(@renderer.base_url, url).to_s.gsub(/:([\w_]+)/, '<strong>&lt;\1&gt;</strong>')
+      end
+      
+      def base_url
+        controller_url = @controller.url
+        controller_url ||= "/"
+        return URI.join(@renderer.base_url, controller_url).to_s
       end
       
       def escape_html(h)
