@@ -1,0 +1,105 @@
+<notextile>
+<style type="text/css">
+body {
+  color: #222;
+  background: #fff;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+  line-height: 130%;
+  margin: 16px;
+}
+hr {
+  height: 2px;
+  display: block;
+  border: 0;
+  background: #ded;
+  margin: 25px 0;
+}
+code, .url, .request, .response {
+  color: #360;
+  font-family: monospace;
+  font-size: inherit;
+}
+.url, .request, .response {
+  display: block;
+  border: solid 1px #8a0;
+  padding: 10px;
+  overflow: auto;
+}
+.url {
+  font-weight: bold;
+}
+.url strong {
+  font-style: italic;
+}
+table.parameters {
+  font-size: inherit;
+  border-collapse: collapse;
+}
+table.parameters th {
+  background: #f0f5f0;
+}
+table.parameters th,
+table.parameters td {
+  padding: 4px 8px;
+  border: solid 1px #bdb;
+  text-align: left;
+  vertical-align: baseline;
+}
+.request .request_first_line,
+.response .response_first_line {
+}
+</style>
+</notextile>
+
+h1. <%= h @controller.title %>
+
+<%= h flow(@controller.description) %>
+
+<hr/>
+
+h2. Contents
+
+<ul>
+<%- @controller.actions.each_with_index do |action, index| -%>
+  <li><a href="#action_<%= index %>"><%= (action.short_description || action.description || '').gsub(/\.+$/, '') %></a></li>
+<%- end -%>
+</ul>
+
+<%- @controller.actions.each_with_index do |action, action_index| -%>
+<hr/>
+
+h2. <a name="action_<%= action_index %>"><%= (action.short_description || '').gsub(/\.+$/, '') %></a>
+
+<%= h flow(action.description) %>
+
+h3. URL
+
+<div class='url'><%= expand_url_with_subtitutions h(action.url) %></div>
+
+h3. Parameters
+
+<table class='parameters'>
+<tr><th>Name</th><th>Description</th></tr>
+<%- action.parameters.each do |param| -%>
+<tr><td>@<%= param.name %>@</td><td><%= h flow(param.description) %></td></tr>
+<%- end -%>
+</table>
+
+h3. Returns
+
+<%= h flow(action.return) %>
+
+<%- action.examples.each_with_index do |example, example_index| -%>
+h3. Example<% if action.examples.length > 1 %><%= example_index + 1 %><% end %>
+
+h4. Request
+
+<notextile><%= format_request(example.request) %></notextile>
+
+h4. Response
+
+<notextile><%= format_response(example.response) %></notextile>
+
+<%- end -%>
+<%- end -%>
