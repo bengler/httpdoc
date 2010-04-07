@@ -107,7 +107,9 @@ module HttpDoc
           end
         end
       end
-      @controller.url ||= $1 if @file_name =~ /(\w+)_controller\./
+      if @controller
+        @controller.url ||= $1 if @file_name =~ /(\w+)_controller\./
+      end
       flush
     end
     
