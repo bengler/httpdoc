@@ -14,6 +14,7 @@ begin
     gem.authors = ["Alexander Staubo"]
     gem.has_rdoc = false
     gem.require_paths = ["lib"]
+    gem.test_files = []
     gem.files = FileList[%W(
       README.markdown
       VERSION

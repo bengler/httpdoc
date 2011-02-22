@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alexander Staubo"]
-  s.date = %q{2011-02-22}
+  s.date = %q{2011-02-23}
   s.default_executable = %q{httpdoc}
   s.description = %q{Simple documentation generator for publishing APIs from Rails applications.}
   s.email = %q{alex@bengler.no}
@@ -22,11 +22,11 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.markdown",
     "VERSION",
-    "bin/http_doc.thor",
-    "lib/http_doc/model.rb",
-    "lib/http_doc/parser.rb",
-    "lib/http_doc/rendering.rb",
-    "lib/http_doc/templates/single_file_textile/controller.textile.erb"
+    "lib/httpdoc.rb",
+    "lib/httpdoc/generator.rb",
+    "lib/httpdoc/model.rb",
+    "lib/httpdoc/parser.rb",
+    "lib/httpdoc/rendering.rb"
   ]
   s.has_rdoc = false
   s.homepage = %q{http://github.com/origo/httpdoc}
@@ -39,9 +39,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<RedCloth>, [">= 0"])
     else
+      s.add_dependency(%q<RedCloth>, [">= 0"])
     end
   else
+    s.add_dependency(%q<RedCloth>, [">= 0"])
   end
 end
 
