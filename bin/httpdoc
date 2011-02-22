@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'httpdoc'
+
+template_name = 'single_file'
+base_url = 'http://example.org/'
+output_directory = '.'
+
+ARGV.options do |opts|
+  opts.banner = "Usage: #{File.basename($0)} [OPTIONS ...] [INPUT ...]"
+  opts.separator ""
+  opts.on("-t", "--template=TEMPLATE", String, "Specify template (default: #{template_name})") do |value| 
+    template_name = value
+  end
+  opts.on("-o", "--output-dir=DIRECTORY", String, "Output directory (defaults to current directory)") do |value| 
+    output_directory = value
+  end
+  opts.on("--base-url=URL", String, "Base URL of HTTP interface (eg., http://myapp.org/)") do |value| 
+    base_url = value
+  end
+  opts.on("-h", "--help", "Show this help message.") do
+    puts opts
+    exit
+  end
+  opts.parse!
+  if ARGV.empty?
+    puts "Nothing to do. Run with -h for help."
+    exit
+  end
+end
+
+generator = Httpdoc::Generator.new
+generator.output_directory = output_directory
+generator.template_name = template_name
+generator.input_paths = ARGV
+generator.base_url = base_url
+generator.generate!

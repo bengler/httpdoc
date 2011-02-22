@@ -1,0 +1,194 @@
+<html>
+  <head>
+    <style type="text/css">
+      body {
+        color: #222;
+        background: #fff;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 10pt;
+        line-height: 130%;
+        margin: 16px;
+      }
+      hr {
+        height: 2px;
+        display: block;
+        border: 0;
+        background: #ded;
+        margin: 25px 0;
+      }
+      code, .url, .request, .response {
+        color: #360;
+        font-family: monospace;
+        font-size: inherit;
+      }
+      .url, .request, .response {
+        display: block;
+        border: solid 1px #8a0;
+        padding: 10px;
+        overflow: auto;
+      }
+      .url {
+        font-weight: bold;
+      }
+      .url strong {
+        font-style: italic;
+      }
+      table.parameters {
+        font-size: inherit;
+        border-collapse: collapse;
+      }
+      table.parameters th {
+        background: #f0f5f0;
+      }
+      table.parameters th,
+      table.parameters td {
+        padding: 4px 8px;
+        border: solid 1px #bdb;
+        text-align: left;
+        vertical-align: baseline;
+      }
+      .request .request_first_line,
+      .response .response_first_line {
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>
+      Events
+    </h1>
+
+    <p>Calendar <span class="caps">API</span> that provides access to events.</p>
+
+    <hr/>
+
+    <h2>
+      Contents
+    </h2>
+
+    <ul>
+        <li>
+          <a href="#action_0"><p>Get a single event</p></a>
+        </li>
+        <li>
+          <a href="#action_1"><p>Find events by query</p></a>
+        </li>
+    </ul>
+
+      <hr/>
+
+      <h2>
+        <a name="action_0"><p>Get a single event</p></a>
+      </h2>
+
+      <p>Get a single event by its ID.</p>
+
+      <h3>
+        URL
+      </h3>
+
+      <div class='url'>http://example.org/api/v2/event/get/<strong>&lt;id&gt;</strong></div>
+
+      <h3>
+        Parameters
+      </h3>
+
+      <table class='parameters'>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+          <tr>
+            <td><code>id</code></td>
+            <td><p>The numeric ID of the event to get.</p></td>
+          </tr>
+          <tr>
+            <td><code>api_key</code></td>
+            <td><p><span class="caps">API</span> key.</p></td>
+          </tr>
+      </table>
+
+      <h3>
+        Returns
+      </h3>
+
+      <p>The single event in Atom format.</p>
+
+        <h3>
+          Example
+          
+        </h3>
+
+        <h4>
+          Request
+        </h4>
+
+        <div class='request'><strong class='request_first_line'>GET http://example.org/api/v2/event/get/123</strong><br/></div>
+
+        <h4>
+          Response
+        </h4>
+
+        <div class='response'><strong class='response_first_line'>HTTP/1.1 200 OK</strong><br/><span class='response_header_line'><strong class='response_header_name'>Content-Type</strong>: <span class='response_header_value'>application/xml; charset=utf-8</span></span><br/><br/><div class='response_body'>&lt;feed xmlns:gd="http://schemas.google.com/g/2005" <br/>  xmlns:gcal="http://schemas.google.com/gCal/2005"<br/>  xmlns:media="http://search.yahoo.com/mrss/"<br/>  xmlns:georss="http://www.georss.org/georss" xmlns="http://www.w3.org/2005/Atom"&gt;<br/>  ...<br/>&lt;/feed&gt;</div></div>
+      <hr/>
+
+      <h2>
+        <a name="action_1"><p>Find events by query</p></a>
+      </h2>
+
+      <p>Find events matching a set of query criteria.</p>
+
+      <h3>
+        URL
+      </h3>
+
+      <div class='url'>http://example.org/api/v2/event/find</div>
+
+      <h3>
+        Parameters
+      </h3>
+
+      <table class='parameters'>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+          <tr>
+            <td><code>q</code></td>
+            <td><p>A text query. Specify this to filter results containing the specified   full-text query. For example, <code>coldplay concert</code> finds events containing the    words &#8220;coldplay&#8221; and &#8220;concert&#8221;.</p></td>
+          </tr>
+          <tr>
+            <td><code>start_time</code></td>
+            <td><p>If specified, only events where the start time is at the specified   date and time or later will be returned. The date and time should be in    <a href="http://tools.ietf.org/html/rfc3339"><span class="caps">RFC</span> 3339</a> format. If the time part is omitted,   00:00 is assumed.</p></td>
+          </tr>
+          <tr>
+            <td><code>api_key</code></td>
+            <td><p><span class="caps">API</span> key.</p></td>
+          </tr>
+      </table>
+
+      <h3>
+        Returns
+      </h3>
+
+      <p>Events in Atom format.</p>
+
+        <h3>
+          Example
+          
+        </h3>
+
+        <h4>
+          Request
+        </h4>
+
+        <div class='request'><strong class='request_first_line'>GET http://example.org/api/v2/event/find?limit=10&start_time=2010-01-01</strong><br/></div>
+
+        <h4>
+          Response
+        </h4>
+
+        <div class='response'><strong class='response_first_line'>HTTP/1.1 200 OK</strong><br/><span class='response_header_line'><strong class='response_header_name'>Content-Type</strong>: <span class='response_header_value'>application/xml; charset=utf-8</span></span><br/><br/><div class='response_body'>&lt;feed xmlns:gd="http://schemas.google.com/g/2005" <br/>  xmlns:gcal="http://schemas.google.com/gCal/2005"<br/>  xmlns:media="http://search.yahoo.com/mrss/"<br/>  xmlns:georss="http://www.georss.org/georss" xmlns="http://www.w3.org/2005/Atom"&gt;<br/>  ...<br/>&lt;/feed&gt;</div></div>
+    
+  </body>
+</html>

@@ -1,4 +1,4 @@
-module HttpDoc
+module Httpdoc
 
   module ControllerDocParser
     
@@ -22,7 +22,7 @@ module HttpDoc
   
   module ActionDocParser
     
-    def self.parse(doc, actions = [])
+    def self.parse(name, doc, actions = [])
       action = Action.new
       if doc =~ /\A(.*?)^\s*@/m
         action.description = $1.strip
@@ -51,6 +51,7 @@ module HttpDoc
         action.url = $1.strip
         break
       end
+      action.url ||= name
       doc.scan(/@example\s*\n(.*?)(^\s*@end|\z)/m) do
         example = Example.new
         s = $1
@@ -89,39 +90,64 @@ module HttpDoc
       reset
       File.open(@file_name) do |file|
         file.readlines.each do |line|
-          if line =~ /\A\s*##(.*)/
-            flush
-          end
-          if @toplevel and line =~ /(^|\s)class \w/
-            flush
-            @toplevel = false
-          end
-          if @controller and not @toplevel and line =~ /^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*)/
-            @controller.constants[$1] = $2
-          end
-          if line =~ /\A\s*#+\s?(.*)/
-            @buffer << $1
-            @buffer << "\n"
-          else
-            flush
+          case @state
+            when :top
+              case line
+                when /\A\s*##(.*)/
+                  @buffer << $1
+                  @buffer << "\n"
+                  @state = :class_doc
+              end
+            when :class_doc
+              case line
+                when /\A\s*#+\s?(.*)/
+                  @buffer << $1
+                  @buffer << "\n"
+                when /(^|\s*)class \w/
+                  unless @buffer.empty?                    
+                    @controller = ControllerDocParser.parse(@buffer)
+                    @buffer = ''
+                  end                  
+                  @state = :class_def
+              end              
+            when :class_def
+              case line
+                when /^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*)/
+                  if @controller
+                    @controller.constants[$1] = $2
+                  end
+                when /\A\s*##(.*)/
+                  @buffer << $1
+                  @state = :method_def
+              end
+            when :method_def
+              case line
+                when /\A\s*#+\s?(.*)/
+                  @buffer << $1
+                  @buffer << "\n"
+                when /\A\s*def ([^\s#\(]+)/
+                  name = $1
+                  unless @buffer.empty?
+                    if @controller
+                      ActionDocParser.parse(name, @buffer, @controller.actions)
+                    end
+                    @buffer = ''
+                  end
+                  @state = :class_def
+                else
+                  unless @buffer.empty?
+                    if @controller
+                      ActionDocParser.parse(nil, @buffer, @controller.actions)
+                    end
+                    @buffer = ''
+                  end
+                  @state = :class_def
+              end
           end
         end
       end
       if @controller
         @controller.url ||= $1 if @file_name =~ /(\w+)_controller\./
-      end
-      flush
-    end
-    
-    def flush
-      if @buffer != ''
-        if @toplevel
-          @controller = ControllerDocParser.parse(@buffer)
-          @toplevel = false
-        elsif @controller
-          ActionDocParser.parse(@buffer, @controller.actions)
-        end
-        @buffer = ''
       end
     end
     
@@ -132,7 +158,7 @@ module HttpDoc
       def reset
         @controller = nil
         @buffer = ''
-        @toplevel = true
+        @state = :top
       end
     
   end

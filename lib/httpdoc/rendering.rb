@@ -1,8 +1,8 @@
 require "uri"
-require "redcloth"
 require "erb"
+require "redcloth"
 
-module HttpDoc
+module Httpdoc
   module Rendering
 
     class UndefinedVariableError < Exception
@@ -46,11 +46,11 @@ module HttpDoc
         }
       end
       
-      def flow(s)
-        s ||= ''
-        s.gsub("\n", ' ')
+      def doc_fragment_to_html(s)
+        s = s.gsub("\n", ' ')
+        RedCloth.new(s).to_html
       end
-      
+            
       def expand_url_with_subtitutions(url)
         url = [base_url, url].join("/") unless url =~ /^\//
         return URI.join(@renderer.base_url, url).to_s.gsub(/:([\w_]+)/, '<strong>&lt;\1&gt;</strong>')
@@ -121,25 +121,34 @@ module HttpDoc
     class SingleFileRenderer
       
       def initialize(options = {})
-        @template_directory = options[:template_directory]
-        @template_directory ||= File.join(File.dirname(__FILE__), "templates/single_file_textile")
         @base_url = options[:base_url]
         @base_url ||= 'http://example.com/'
       end
       
       def render_controller(controller)
-        context = ControllerContext.new(self, controller)
-        template = find_template("controller.textile")
-        textile = template.result(context.get_binding)
-        return RedCloth.new(textile).to_html
+        %w(erb).each do |extension|
+          template_file_name = "#{@template_name}"
+          template_file_name = "#{template_file_name}.#{extension}" unless template_file_name =~ /#{Regexp.escape(extension)}$/
+          unless File.exist?(template_file_name)
+            possible_template_file_name = File.join(File.dirname(__FILE__), "templates/#{template_file_name}")
+            if File.exist?(possible_template_file_name)
+              template_file_name = possible_template_file_name
+            end
+          end
+          template_content = File.read(template_file_name)
+          context = ControllerContext.new(self, controller)
+          erb = ERB.new(template_content, nil, "-")
+          return erb.result(context.get_binding)
+        end
       end
       
       def find_template(name)
-        return ERB.new(File.read(File.join(@template_directory, "#{name}.erb")), nil, "-")
+        %(erb).each do |extension|
+        end
       end
       
-      attr_reader :template_directory
       attr_reader :base_url
+      attr_accessor :template_name
       
     end
     

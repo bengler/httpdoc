@@ -1,4 +1,4 @@
-module HttpDoc
+module Httpdoc
 
   class Parameter
     attr_accessor :name
