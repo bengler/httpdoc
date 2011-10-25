@@ -5,15 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{httpdoc}
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Alexander Staubo"]
-  s.date = %q{2011-02-23}
-  s.default_executable = %q{httpdoc}
+  s.authors = [%q{Alexander Staubo}]
+  s.date = %q{2011-10-25}
   s.description = %q{Simple documentation generator for publishing APIs from Rails applications.}
   s.email = %q{alex@bengler.no}
-  s.executables = ["httpdoc"]
+  s.executables = [%q{httpdoc}]
   s.extra_rdoc_files = [
     "LICENSE",
     "README.markdown"
@@ -28,14 +27,12 @@ Gem::Specification.new do |s|
     "lib/httpdoc/parser.rb",
     "lib/httpdoc/rendering.rb"
   ]
-  s.has_rdoc = false
   s.homepage = %q{http://github.com/origo/httpdoc}
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.require_paths = [%q{lib}]
+  s.rubygems_version = %q{1.8.6}
   s.summary = %q{Simple documentation generator for publishing APIs from Rails applications.}
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
