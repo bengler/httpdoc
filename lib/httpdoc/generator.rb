@@ -10,10 +10,10 @@ module Httpdoc
     def generate!
       file_names = @input_paths.map { |path|
         path = path.gsub(/\/$/, '')
-        if File.file?(path)
-          path
+        if File.directory?(path)
+          Dir.glob("#{path}/**/*.rb")
         else
-          Dir.glob("#{path}/**/*_controller.rb")
+          Dir.glob(path)
         end
       }.flatten
       file_names.each do |file_name|
